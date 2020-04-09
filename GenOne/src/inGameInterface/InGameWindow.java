@@ -198,6 +198,7 @@ public class InGameWindow extends JFrame {
 					lpane.remove(0);
 					lpane.revalidate();
 					lpane.repaint();
+					p1.getFirstActiveTeam().getMoves(0).setMinPP(1);
 					turn = true;
 					pa = 0;
 					cvw.setButton(pa);
@@ -209,6 +210,7 @@ public class InGameWindow extends JFrame {
 					lpane.remove(0);
 					lpane.revalidate();
 					lpane.repaint();
+					p1.getFirstActiveTeam().getMoves(1).setMinPP(1);
 					turn = true;
 					pa = 1;
 					cvw.setButton(pa);
@@ -220,6 +222,7 @@ public class InGameWindow extends JFrame {
 					lpane.remove(0);
 					lpane.revalidate();
 					lpane.repaint();
+					p1.getFirstActiveTeam().getMoves(2).setMinPP(1);
 					turn = true;
 					pa = 2;
 					cvw.setButton(pa);
@@ -231,6 +234,7 @@ public class InGameWindow extends JFrame {
 					lpane.remove(0);
 					lpane.revalidate();
 					lpane.repaint();
+					p1.getFirstActiveTeam().getMoves(3).setMinPP(1);
 					turn = true;
 					pa = 3;
 					cvw.setButton(pa);

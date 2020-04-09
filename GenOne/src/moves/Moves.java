@@ -44,16 +44,16 @@ public class Moves implements java.io.Serializable{
 	protected String category = null; // Om det är en status attack eller en damage attack.
 	protected String id = null; // Håller länken till attacken.
 	public int getMaxPP() {
-		return maxPP;
+		return this.maxPP;
 	}
 	public void setMaxPP(int maxPP) {
 		this.maxPP = maxPP;
 	}
 	public int getPP() {
-		return pp;
+		return this.pp;
 	}
 	public void setMinPP(int minPP) {
-		this.pp = minPP;
+		this.pp -= minPP;
 	}
 	public String getName() {
 		return this.name;
