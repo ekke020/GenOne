@@ -1,9 +1,11 @@
 package items;
 
-public class Balls extends Items {
+public class Balls {
 
 	protected String itemName;
+	protected String icon;
+	
 	Balls() {
-		this.itemType = 0;
+		
 	}
 }
