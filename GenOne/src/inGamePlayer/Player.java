@@ -2,7 +2,6 @@ package inGamePlayer;
 
 import java.util.ArrayList;
 
-import items.Items;
 import pokemon.Monsters;
 
 public class Player implements java.io.Serializable{
@@ -12,7 +11,7 @@ public class Player implements java.io.Serializable{
 	private Monsters[] activeTeam = new Monsters[6]; // En array av Monsters klassen som kan hålla 6 av spelarens pokemon.
 	private Monsters[] temp = new Monsters[1]; // en temporär array av Monsters klassen som används för att byta plats på lagmeddlemmar hos spelaren.
 	private ArrayList<Monsters> team = new ArrayList<Monsters>(); // En lista som håller alla spelarens pokemon.
-	private ArrayList<Items> items = new ArrayList<Items>(); // List containing all the items of the player.
+	
 	private int money;
 	private String name = "Red";
 	
@@ -37,9 +36,7 @@ public class Player implements java.io.Serializable{
 	public Monsters getActiveTeam(int x) {
 		return activeTeam[x];
 	} // Returnerar en av spelarens aktiva lagmeddlemmar.
-	public Items getPlayerItems(int x) {
-		return items.get(x);
-	}
+
 	public boolean isTeamAlive() {
 		int x = 6;
 		int y = 0;
