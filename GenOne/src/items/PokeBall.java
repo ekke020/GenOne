@@ -1,9 +1,11 @@
 package items;
 
-public class PokeBall extends Balls {
+public class PokeBall extends Items {
 
-	PokeBall() {
+	public PokeBall() {
 		this.itemName = "Poke ball";
 		this.icon = "Poke_Ball_Item_Sprite.png";
+		this.itemType = 1;
+		this.itemID = 1;
 	}
 }

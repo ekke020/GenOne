@@ -1,44 +1,90 @@
 package inGamePlayer;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
-import items.Balls;
+import items.GreatBall;
 import items.Items;
-import items.KeyItems;
-import items.TMHM;
+import items.MasterBall;
+import items.PokeBall;
+import items.UltraBall;
+
 
 public class PlayerInventory {
 	
-	
-	private ArrayList<Balls> balls; // List containing all of the players pokeballs.
-	private ArrayList<Items> items; // List containing all of the players items.
-	private ArrayList<KeyItems> keyItems; // List containing all key items of the player.
-	private ArrayList<TMHM> tmhm; // List containing all the TM and HMs of the player.
+	private int[] items;
+	private int[] amount;
+	    // Rethink the whole item and inventory system, gather inspiration from sources
+	//private ArrayList<Items> items = new ArrayList<Items>(); 
+	private ArrayList<Items> balls = new ArrayList<Items>(); 
+	private ArrayList<Items> keyItems = new ArrayList<Items>(); 
+	private ArrayList<Items> tmhm = new ArrayList<Items>(); 
 	
 	PlayerInventory() {
-		balls = new ArrayList<Balls>();
-		items = new ArrayList<Items>();
-		keyItems = new ArrayList<KeyItems>();
-		tmhm = new ArrayList<TMHM>();
-		
-		/*this.mainItems.addAll(balls);
-		this.mainItems.addAll(items);
-		this.mainItems.addAll(keyItems);
-		this.mainItems.addAll(tmhm);*/
+		items = new int[10];
+		amount = new int[10];
+
+		addItem(generateItem(1), 5);
+		addItem(generateItem(1), 5);
+		addItem(generateItem(1), 5);
+		addItem(generateItem(2), 5);
+	
 	}
-	/*
-	 * First iteration of the player inventory, figure out how to treat more than one of the same object in the list.
-	 */
-	public ArrayList<Balls> getPlayerBalls() {
-		return this.balls;
-	} 
-	public ArrayList<Items> getPlayerItems() {
-		return this.items;
+    public int[] getItems() {
+        return this.items;
+    }
+    public int getAmount(int x) {
+        return this.amount[x];
+    }
+    public int getInventoryLength() {
+    	int length = 0;
+		for (int i = 0; i < items.length; i++) {
+			length++;
+			  if (this.items[i] == 0) {
+				  length--;
+				  break;
+			  }
+			}
+		return length;
+    }
+	public Items generateItem(int x) {
+		Items item[] = new Items[5];	
+		item[1] = new PokeBall();
+		item[2] = new GreatBall();
+		item[3] = new UltraBall();
+		item[4] = new MasterBall();
+		return item[x];
 	}
-	public ArrayList<KeyItems> getPlayerKeyItems() {
-		return this.keyItems;
+	private int find(int[] a, int target)
+	{
+		return IntStream.range(0, a.length)
+						.filter(i -> target == a[i])
+						.findFirst()
+						.orElse(-1);	// return -1 if target is not found
 	}
-	public ArrayList<TMHM> getPlayerTMHM() {
-		return this.tmhm;
+	public int getItemID(int x) {
+		return this.items[x];
 	}
+	public void addItem(Items item, int x) {
+		boolean itemExist = false;
+
+		for (int i : items) {
+			  if (item.getItemID() == i) {
+				  this.amount[find(items, i)] += x;
+				  itemExist = true;
+				  break;
+			  }
+			}
+		if (itemExist == false) {
+			for (int i = 0; i < items.length; i++) {
+				  if (this.items[i] == 0) {
+					  this.items[i] = item.getItemID();
+					  this.amount[i] = x;
+					  break;
+				  }
+				}
+		}
+	}
+
+	
 }

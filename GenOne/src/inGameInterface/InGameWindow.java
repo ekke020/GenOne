@@ -443,7 +443,7 @@ public class InGameWindow extends JFrame {
 		inventory.setBorder(null);
 		lpaneTwo.add(inventory, JLayeredPane.PALETTE_LAYER);
 		
-		inventoryBag = new Inventory(p1);
+		inventoryBag = new Inventory(p1, 2);
 		inventoryBag.setInGameListener(new InGameListener() {
 
 			@Override

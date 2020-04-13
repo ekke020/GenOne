@@ -53,6 +53,7 @@ public class Inventory extends JPanel{
 	
 	private InGameFont inGameFont;
 	private Font gameFont;
+	private int index;
 	Inventory() {
 	//	setLayout(new FlowLayout(FlowLayout.LEFT));
 		setLayout(new GridBagLayout());
@@ -178,8 +179,9 @@ public class Inventory extends JPanel{
 		gc.insets = new Insets(0, 12, 0, 0);
 		add(nameFour, gc);
 	}
-	Inventory(Player p1) {
+	Inventory(Player p1, int index) {
 		
+		this.index = index;
 		GridBagConstraints gc = new GridBagConstraints();
 		setBackground(Color.white);
 		setLayout(null);
@@ -204,14 +206,17 @@ public class Inventory extends JPanel{
 		scrollPane.setBounds(15, 15, 460, 228); // 15, 15, 460, 228
 		scrollPane.setBorder(inner);
 		add(scrollPane);
-		for (int i = 0; i < 20; i++) {
-			///////// ITEM ICON ///////////
-			itemLabel = new JLabel(loadMenuIcon("Poke_Ball_Item_Sprite.png", 20, 20));
+		for (int i = 0; i < p1.getPi().getInventoryLength(); i++) {
+			///////// ITEM ICON ///////////"Poke_Ball_Item_Sprite.png" 
+			itemLabel = new JLabel(loadMenuIcon(p1.getPi().generateItem(p1.getPi().getItemID(i)).getIcon(), 20, 20));
 			gc.weightx = 0.1;
 			//Temporary solution, when the player has an inventory, add the inventory length here
 			// set 1 to the last item in the inventory.
-			// gc.weighty = (i == 5 || i >= 4) ? 1 : 0;
-			gc.weighty = 0;
+			System.out.println(p1.getPi().getInventoryLength());
+			System.out.println(i);
+			gc.weighty = (i == p1.getPi().getInventoryLength() || i < p1.getPi().getInventoryLength()) ? 1 : 0;
+			System.out.println(gc.weighty);
+			//gc.weighty = 0;
 			
 			gc.gridx = 0;
 			gc.gridy = i;
@@ -221,7 +226,7 @@ public class Inventory extends JPanel{
 			gc.insets = new Insets(0, 0, 0, 0);
 			inventoryPanel.add(itemLabel, gc);
 			///////// ITEM NAME ///////////
-			name = new JTextField("PokeBall");
+			name = new JTextField(p1.getPi().generateItem(p1.getPi().getItemID(i)).getItemName());
 			name.setBorder(null);
 			name.setEditable(false);
 			name.setHighlighter(null);
@@ -237,7 +242,7 @@ public class Inventory extends JPanel{
 			gc.insets = new Insets(4, 0, 0, 0);
 			inventoryPanel.add(name, gc);
 			///////// ITEM COUNT ///////////
-			amount = new JTextField("x 45");
+			amount = new JTextField("x " + p1.getPi().getAmount(i));
 			amount.setBorder(null);
 			amount.setEditable(false);
 			amount.setHighlighter(null);
