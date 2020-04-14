@@ -207,17 +207,11 @@ public class Inventory extends JPanel{
 		scrollPane.setBorder(inner);
 		add(scrollPane);
 		for (int i = 0; i < p1.getPi().getInventoryLength(); i++) {
-			///////// ITEM ICON ///////////"Poke_Ball_Item_Sprite.png" 
+			///////// ITEM ICON ///////////
 			itemLabel = new JLabel(loadMenuIcon(p1.getPi().generateItem(p1.getPi().getItemID(i)).getIcon(), 20, 20));
 			gc.weightx = 0.1;
-			//Temporary solution, when the player has an inventory, add the inventory length here
-			// set 1 to the last item in the inventory.
-			System.out.println(p1.getPi().getInventoryLength());
-			System.out.println(i);
-			gc.weighty = (i == p1.getPi().getInventoryLength() || i < p1.getPi().getInventoryLength()) ? 1 : 0;
-			System.out.println(gc.weighty);
-			//gc.weighty = 0;
-			
+			gc.weighty = (i+1 == p1.getPi().getInventoryLength()) ? 1 : 0;
+	
 			gc.gridx = 0;
 			gc.gridy = i;
 			

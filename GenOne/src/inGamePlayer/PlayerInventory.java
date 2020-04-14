@@ -1,6 +1,6 @@
 package inGamePlayer;
 
-import java.util.ArrayList;
+
 import java.util.stream.IntStream;
 
 import items.GreatBall;
@@ -16,9 +16,9 @@ public class PlayerInventory {
 	private int[] amount;
 	    // Rethink the whole item and inventory system, gather inspiration from sources
 	//private ArrayList<Items> items = new ArrayList<Items>(); 
-	private ArrayList<Items> balls = new ArrayList<Items>(); 
-	private ArrayList<Items> keyItems = new ArrayList<Items>(); 
-	private ArrayList<Items> tmhm = new ArrayList<Items>(); 
+	//private ArrayList<Items> balls = new ArrayList<Items>(); 
+	//private ArrayList<Items> keyItems = new ArrayList<Items>(); 
+	//private ArrayList<Items> tmhm = new ArrayList<Items>(); 
 	
 	PlayerInventory() {
 		items = new int[10];
@@ -28,6 +28,9 @@ public class PlayerInventory {
 		addItem(generateItem(1), 5);
 		addItem(generateItem(1), 5);
 		addItem(generateItem(2), 5);
+		addItem(generateItem(3), 5);
+		addItem(generateItem(4), 5);
+		addItem(generateItem(3), 5);
 	
 	}
     public int[] getItems() {
