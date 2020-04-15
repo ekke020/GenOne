@@ -10,7 +10,11 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -31,7 +35,13 @@ import inGamePlayer.Player;
 public class Inventory extends JPanel{
 
 	private InGameListener inGameListener;
+	private InGameInventoryListener inGameInventoryListener;
 	
+	private HashMap<Integer, Integer> buttonIndex;
+	
+	public HashMap<Integer, Integer> getButtonIndex() {
+		return buttonIndex;
+	}
 	private JPanel inventoryPanel;
 	
 	private JButton items;
@@ -54,6 +64,7 @@ public class Inventory extends JPanel{
 	private InGameFont inGameFont;
 	private Font gameFont;
 	private int index;
+	private int itemID;
 	Inventory() {
 	//	setLayout(new FlowLayout(FlowLayout.LEFT));
 		setLayout(new GridBagLayout());
@@ -100,6 +111,18 @@ public class Inventory extends JPanel{
 		gc.fill = GridBagConstraints.NONE;
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(0, 40, 0, 0);
+		items.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				InGameClicks gc = new InGameClicks(this, 0);
+					
+				if (inGameListener != null) {
+					inGameListener.formEventOccurred(gc);
+				}	
+					
+			}
+				
+		});
 		add(items, gc);
 		/////////// FIRST NAME /////////////
 		gc.weightx = 1;
@@ -122,6 +145,18 @@ public class Inventory extends JPanel{
 		gc.fill = GridBagConstraints.NONE;
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
+		balls.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				InGameClicks gc = new InGameClicks(this, 1);
+					
+				if (inGameListener != null) {
+					inGameListener.formEventOccurred(gc);
+				}	
+					
+			}
+				
+		});
 		add(balls, gc);
 		/////////// SECOND NAME /////////////
 		gc.weightx = 1;
@@ -144,6 +179,18 @@ public class Inventory extends JPanel{
 		gc.fill = GridBagConstraints.NONE;
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
+		keyItems.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				InGameClicks gc = new InGameClicks(this, 2);
+					
+				if (inGameListener != null) {
+					inGameListener.formEventOccurred(gc);
+				}	
+					
+			}
+				
+		});
 		add(keyItems, gc);
 		/////////// THIRD NAME /////////////
 		gc.weightx = 1;
@@ -166,6 +213,18 @@ public class Inventory extends JPanel{
 		gc.fill = GridBagConstraints.NONE;
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gc.insets = new Insets(0, 0, 0, 0);
+		tmHm.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				InGameClicks gc = new InGameClicks(this, 3);
+					
+				if (inGameListener != null) {
+					inGameListener.formEventOccurred(gc);
+				}	
+					
+			}
+				
+		});
 		add(tmHm, gc);
 		/////////// FOURTH NAME /////////////
 		gc.weightx = 1;
@@ -180,7 +239,7 @@ public class Inventory extends JPanel{
 		add(nameFour, gc);
 	}
 	Inventory(Player p1, int index) {
-		
+		buttonIndex = new HashMap<Integer, Integer>();
 		this.index = index;
 		GridBagConstraints gc = new GridBagConstraints();
 		setBackground(Color.white);
@@ -206,11 +265,12 @@ public class Inventory extends JPanel{
 		scrollPane.setBounds(15, 15, 460, 228); // 15, 15, 460, 228
 		scrollPane.setBorder(inner);
 		add(scrollPane);
-		for (int i = 0; i < p1.getPi().getInventoryLength(); i++) {
+		for (int i = 0; i < p1.getPi().getInventoryLength(index); i++) {
+			itemID = (p1.getPi().generateItem(p1.getPi().getItemID(i, index)).getItemID());
 			///////// ITEM ICON ///////////
-			itemLabel = new JLabel(loadMenuIcon(p1.getPi().generateItem(p1.getPi().getItemID(i)).getIcon(), 20, 20));
+			itemLabel = new JLabel(loadMenuIcon(p1.getPi().generateItem(p1.getPi().getItemID(i, index)).getIcon(), 20, 20));
 			gc.weightx = 0.1;
-			gc.weighty = (i+1 == p1.getPi().getInventoryLength()) ? 1 : 0;
+			gc.weighty = (i+1 == p1.getPi().getInventoryLength(index)) ? 1 : 0;
 	
 			gc.gridx = 0;
 			gc.gridy = i;
@@ -220,7 +280,7 @@ public class Inventory extends JPanel{
 			gc.insets = new Insets(0, 0, 0, 0);
 			inventoryPanel.add(itemLabel, gc);
 			///////// ITEM NAME ///////////
-			name = new JTextField(p1.getPi().generateItem(p1.getPi().getItemID(i)).getItemName());
+			name = new JTextField(p1.getPi().generateItem(p1.getPi().getItemID(i, index)).getItemName());
 			name.setBorder(null);
 			name.setEditable(false);
 			name.setHighlighter(null);
@@ -236,7 +296,7 @@ public class Inventory extends JPanel{
 			gc.insets = new Insets(4, 0, 0, 0);
 			inventoryPanel.add(name, gc);
 			///////// ITEM COUNT ///////////
-			amount = new JTextField("x " + p1.getPi().getAmount(i));
+			amount = new JTextField("x " + p1.getPi().getAmount(index, i));
 			amount.setBorder(null);
 			amount.setEditable(false);
 			amount.setHighlighter(null);
@@ -253,6 +313,20 @@ public class Inventory extends JPanel{
 			inventoryPanel.add(amount, gc);
 			///////// USE BUTTON ///////////
 			useItem = new JButton("Use");
+			buttonIndex.put(useItem.hashCode(), itemID);
+			useItem.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					JButton item = (JButton) e.getSource();
+					InventoryClicks gc = new InventoryClicks(this, item.hashCode());
+					if (inGameInventoryListener != null) {
+						inGameInventoryListener.formEventOccurred(gc);
+					}	
+						
+				}
+					
+			});
+			
 			useItem.setFont(inGameFont.getFont());
 			useItem.setHorizontalAlignment(SwingConstants.CENTER);
 			useItem.setPreferredSize(new Dimension(60, 18));
@@ -269,6 +343,7 @@ public class Inventory extends JPanel{
 			inventoryPanel.add(useItem, gc);
 		}
 	}
+
 	Inventory(TextUI textUI) {
 		
 		setLayout(null);
@@ -305,10 +380,12 @@ public class Inventory extends JPanel{
 		Image image = icon.getImage(); // transform it 
 		Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
 		icon = new ImageIcon(newimg);
-		System.out.println(id);
         return icon;
 	}
 	public void setInGameListener(InGameListener listener) {
 		this.inGameListener = listener;
+	}
+	public void SetInGameInventoryListener(InGameInventoryListener listener) {
+		this.inGameInventoryListener = listener;
 	}
 }

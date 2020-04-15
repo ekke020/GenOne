@@ -19,4 +19,7 @@ public class Items {
 	public String getItemName() {
 		return this.itemName;
 	}
+	public int getItemType() {
+		return this.itemType;
+	}
 }

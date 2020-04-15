@@ -9,11 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
-
-
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import javax.swing.JLayeredPane;
@@ -33,7 +32,7 @@ import pokemon.Squirtle;
 
 
 public class InGameWindow extends JFrame {
-	
+
 	private BattleElements battlePanel;
 	private JLayeredPane lpane;
 	private JLayeredPane lpaneTwo;
@@ -61,6 +60,7 @@ public class InGameWindow extends JFrame {
 	private boolean fleeBattle = false;
 	private boolean turn = false;
 	private String filepath = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Version 1.0 Folder" + File.separator + "Game assets" + File.separator + "music" + File.separator + "24(BattleVSWildP2).wav";
+	private HashMap<Integer, Integer> buttonIndex;
 	/*private String filepath2 = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Version 1.0 Folder" + File.separator + "Game assets" + File.separator + "music" + File.separator + "24(BattleVSWildP2).wav";
 	inGameMusic = new InGameMusic();
 	inGameMusic.playLoopedMusic(filepath, filepath2); */
@@ -426,13 +426,28 @@ public class InGameWindow extends JFrame {
 			public void formEventOccurred(InGameClicks e) {
 				int button = e.getButton();
 				if (button == 0) {
-					
+					lpaneTwo.remove(inventoryBag);
+					lpaneTwo.revalidate();
+					lpaneTwo.repaint();
+					addInventoryBag(0);
 				}
 				if (button == 1) {
-					
+					lpaneTwo.remove(inventoryBag);
+					lpaneTwo.revalidate();
+					lpaneTwo.repaint();
+					addInventoryBag(1);
 				}
 				if (button == 2) {
-					
+					lpaneTwo.remove(inventoryBag);
+					lpaneTwo.revalidate();
+					lpaneTwo.repaint();
+					addInventoryBag(2);
+				}
+				if (button ==3) {
+					lpaneTwo.remove(inventoryBag);
+					lpaneTwo.revalidate();
+					lpaneTwo.repaint();
+					addInventoryBag(3);
 				}
 				
 			}
@@ -442,24 +457,7 @@ public class InGameWindow extends JFrame {
 		//inventory.setBorder(BorderFactory.createLineBorder(Color.black));
 		inventory.setBorder(null);
 		lpaneTwo.add(inventory, JLayeredPane.PALETTE_LAYER);
-		
-		inventoryBag = new Inventory(p1, 2);
-		inventoryBag.setInGameListener(new InGameListener() {
-
-			@Override
-			public void formEventOccurred(InGameClicks e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
-		inventoryBag.setBorder(BorderFactory.createLineBorder(Color.black));
-		inventoryBag.setBounds(5, 70, 490, 258);
-		lpaneTwo.add(inventoryBag, JLayeredPane.PALETTE_LAYER);
-		
-		lpaneTwo.revalidate();
-		lpaneTwo.repaint();
-		
+		addInventoryBag(0);
 		inventory = new Inventory(textUI);
 		inventory.setBounds(397, 74, 70, 54);
 		lpane.add(inventory, 1, 0);
@@ -482,6 +480,27 @@ public class InGameWindow extends JFrame {
 			}
 			
 		});
+		
+		
+	}
+	private void addInventoryBag(int x) {
+		inventoryBag = new Inventory(p1, x);
+		inventoryBag.SetInGameInventoryListener(new InGameInventoryListener() {
+
+			@Override
+			public void formEventOccurred(InventoryClicks c) {
+				//System.out.println(buttonIndex.get(c.getID()));
+				buttonIndex = inventoryBag.getButtonIndex();
+				System.out.println(buttonIndex.get(c.getID()));
+			}
+			
+		});
+		inventoryBag.setBorder(BorderFactory.createLineBorder(Color.black));
+		inventoryBag.setBounds(5, 70, 490, 258);
+		lpaneTwo.add(inventoryBag, JLayeredPane.PALETTE_LAYER);
+		
+		lpaneTwo.revalidate();
+		lpaneTwo.repaint();
 	}
 	private Monsters generateAndAddTest() {
 		Monsters m1[] = new Monsters[4];	
