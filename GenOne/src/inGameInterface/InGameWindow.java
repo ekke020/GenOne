@@ -3,7 +3,6 @@ package inGameInterface;
 
 
 import java.awt.Color;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,15 +11,10 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-
 import javax.swing.JLayeredPane;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import inGamePlayer.Player;
 import music.Sound;
@@ -51,7 +45,8 @@ public class InGameWindow extends JFrame {
 	private StatsWindow statsWindowTwo;
 	private Inventory inventory;
 	private Inventory inventoryBag;
-	
+	private ItemTeamMenu itemTeamMenu;
+	private ItemTeamMenu itemTeamMenuTwo;
 	private ActionListener listener;
 	private Timer timer;
 	
@@ -360,14 +355,16 @@ public class InGameWindow extends JFrame {
 				int button = e.getButton();
 				
 				if (button == 0) {
-					lpane.remove(0);
-					lpane.revalidate();
-					lpane.repaint();
-					textUI.revalidateText();
-					lpaneTwo.remove(0);
-					lpaneTwo.revalidate();
-					lpaneTwo.repaint();
-					addBattleMainMenuUI();
+					if (!(textUI.getTimer().isRunning())) {
+						lpane.remove(0);
+						lpane.revalidate();
+						lpane.repaint();
+						textUI.revalidateText();
+						lpaneTwo.remove(0);
+						lpaneTwo.revalidate();
+						lpaneTwo.repaint();
+						addBattleMainMenuUI();
+					}
 				}
 			}
 			
@@ -467,15 +464,17 @@ public class InGameWindow extends JFrame {
 				int button = e.getButton();
 				
 				if (button == 0) {
-					lpane.remove(0);
-					lpane.revalidate();
-					lpane.repaint();
-					textUI.revalidateText();
-					lpaneTwo.remove(1);
-					lpaneTwo.remove(0);
-					lpaneTwo.revalidate();
-					lpaneTwo.repaint();
-					addBattleMainMenuUI();
+					if (!(textUI.getTimer().isRunning())) {
+						lpane.remove(0);
+						lpane.revalidate();
+						lpane.repaint();
+						textUI.revalidateText();
+						lpaneTwo.remove(1);
+						lpaneTwo.remove(0);
+						lpaneTwo.revalidate();
+						lpaneTwo.repaint();
+						addBattleMainMenuUI();
+					}
 				}
 			}
 			
@@ -489,9 +488,35 @@ public class InGameWindow extends JFrame {
 
 			@Override
 			public void formEventOccurred(InventoryClicks c) {
-				//System.out.println(buttonIndex.get(c.getID()));
 				buttonIndex = inventoryBag.getButtonIndex();
 				System.out.println(buttonIndex.get(c.getID()));
+				// General items
+				if (p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemType() == 0) {
+					lpane.remove(0);
+					lpane.revalidate();
+					lpane.repaint();
+					textUI.revalidateText();
+					lpaneTwo.remove(1);
+					lpaneTwo.remove(0);
+					lpaneTwo.revalidate();
+					lpaneTwo.repaint();
+					addItemTeamMenu(buttonIndex.get(c.getID()));
+				}
+				// pokeballs
+				else if (p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemType() == 1) {
+					
+				}
+				// key items
+				else if (p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemType() == 2) {
+					
+				}
+				// TM/HM
+				else if (p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemType() == 3) {
+					if (cvw.isBattleOver() == false && !(textUI.getTimer().isRunning())){
+						textUI.revalidateText();
+						textUI.setNewText(p1.getFirstActiveTeam().getName() + " Red now is not\n\nthe time", 0, false);
+					}
+				}
 			}
 			
 		});
@@ -501,6 +526,71 @@ public class InGameWindow extends JFrame {
 		
 		lpaneTwo.revalidate();
 		lpaneTwo.repaint();
+	}
+	private void addItemTeamMenu(int itemID) {
+		itemTeamMenu = new ItemTeamMenu(p1);
+		itemTeamMenu.setBounds(0, 0, 500, 330);
+		lpaneTwo.add(itemTeamMenu, 1, 0);
+		itemTeamMenu.SetInGameInventoryListener(new InGameInventoryListener() {
+
+			@Override
+			public void formEventOccurred(InventoryClicks c) {
+				buttonIndex = itemTeamMenu.getButtonIndex();
+				System.out.println(buttonIndex.get(c.getID()));
+				
+				if (p1.getActiveTeam(buttonIndex.get(c.getID())).getHP() == p1.getActiveTeam(buttonIndex.get(c.getID())).getMaxHP() && !(textUI.getTimer().isRunning())) {
+					textUI.revalidateText();
+					textUI.setNewText(p1.getFirstActiveTeam().getName() + "s hp\n\nis already full!", 0, false);
+				}
+				else if (p1.getActiveTeam(buttonIndex.get(c.getID())).getHP() <= 0 && !(textUI.getTimer().isRunning())) {
+					textUI.revalidateText();
+					textUI.setNewText(p1.getActiveTeam(buttonIndex.get(c.getID())) + " is\n\nfainted!", 0, false);	
+				}
+				else {
+					itemTeamMenu.removeUse();
+					p1.getPi().removeItem(p1.getPi().generateItem(itemID), 1);
+					System.out.println(buttonIndex.get(c.getID()));
+					itemTeamMenu.heal(p1, battlePanel, buttonIndex.get(c.getID()), p1.getPi().generateItem(itemID).getItemEffect());
+				}
+			}
+			
+		});
+		itemTeamMenuTwo = new ItemTeamMenu(textUI);
+		itemTeamMenuTwo.setBounds(397, 74, 70, 54);
+		lpane.add(itemTeamMenuTwo, 1, 0);
+		itemTeamMenuTwo.setInGameListener(new InGameListener() {
+
+			public void formEventOccurred(InGameClicks e) {
+				int button = e.getButton();
+				boolean toggle = e.getToggle();
+				System.out.println(toggle);
+				if (toggle == false) {
+					if (!(textUI.getTimer().isRunning())) {
+						lpane.remove(0);
+						lpane.revalidate();
+						lpane.repaint();
+						textUI.revalidateText();
+						lpaneTwo.remove(0);
+						lpaneTwo.revalidate();
+						lpaneTwo.repaint();
+						addInventory();
+					}
+				}
+				else if (toggle == true) {
+					if (!(itemTeamMenu.getTimer().isRunning())) {
+						lpane.remove(0);
+						lpane.revalidate();
+						lpane.repaint();
+						textUI.revalidateText();
+						lpaneTwo.remove(0);
+						lpaneTwo.revalidate();
+						lpaneTwo.repaint();
+						cvw.onlyAI(p1, m1, textUI, battlePanel);
+					}
+				}
+			}
+			
+		});
 	}
 	private Monsters generateAndAddTest() {
 		Monsters m1[] = new Monsters[4];	

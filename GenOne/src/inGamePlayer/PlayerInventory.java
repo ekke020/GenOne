@@ -184,6 +184,40 @@ public class PlayerInventory {
 				}
 		}
 	}
+	public void removeItem(Items item, int amount) {
+		
+		copy = new int[10];
+		copyAmount = new int[10];
+		
+		if (item.getItemType() == 0) {
+    		copy = items;
+    		copyAmount = itemsAmount;
+    	}
+    	else if (item.getItemType() == 1) {
+    		copy = pokeBalls;
+    		copyAmount = pokeBallsAmount;
+    	}
+    	else if (item.getItemType() == 2) {
+    		copy = keyItems;
+    		copyAmount = keyItemsAmount;
+    	}
+    	else if (item.getItemType() == 3) {
+    		copy = tmhm;
+    		copyAmount = tmhmAmount;
+    	}
+		
+		for (int i : copy) {
+			  if (item.getItemID() == i) {
+				  this.copyAmount[find(copy, i)] -= amount;
+				  if (this.copyAmount[find(copy,i)] == 0) {
+					  System.out.println("found it");
+					  System.out.println(copy[i]);
+					  this.copy[find(copy, i)] = 0; 
+				  }
+				  break;
+			  }
+			}
+	}
 
 	
 }

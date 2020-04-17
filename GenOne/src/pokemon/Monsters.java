@@ -170,6 +170,9 @@ public class Monsters implements java.io.Serializable {
 	public void healHP() {
 		this.hp = this.maxHp;
 	}
+	public void potion(int x) {
+		this.hp += x;
+	}
 	public int getAttack() {
 		return this.attack;
 	} // Returnerar attack stats

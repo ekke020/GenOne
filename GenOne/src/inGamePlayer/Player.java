@@ -1,10 +1,7 @@
 package inGamePlayer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import items.Items;
-import items.PokeBall;
 import pokemon.Monsters;
 
 public class Player implements java.io.Serializable{
@@ -15,10 +12,6 @@ public class Player implements java.io.Serializable{
 	private Monsters[] temp = new Monsters[1]; // en temporär array av Monsters klassen som används för att byta plats på lagmeddlemmar hos spelaren.
 	private ArrayList<Monsters> team = new ArrayList<Monsters>(); // En lista som håller alla spelarens pokemon.
 	private PlayerInventory pi = new PlayerInventory();
-
-	//private ArrayList<HashMap<ItemIndex, Integer>> inventory = new ArrayList<HashMap<ItemIndex, Integer>>();
-	
-
 
 	private int money;
 	private String name = "Red";
@@ -42,6 +35,9 @@ public class Player implements java.io.Serializable{
 	} // returnerar spelarens första pokemon.
 	public Monsters getActiveTeam(int x) {
 		return activeTeam[x];
+	} // Returnerar en av spelarens aktiva lagmeddlemmar.
+	public Monsters[] getEntireActiveTeam() {
+		return this.activeTeam;
 	} // Returnerar en av spelarens aktiva lagmeddlemmar.
 	public PlayerInventory getPi() {
 		return pi;

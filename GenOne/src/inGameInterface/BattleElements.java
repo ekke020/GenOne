@@ -576,6 +576,12 @@ public class BattleElements extends JPanel {
 		timer.start();
 		
 	}
+	public void updateInterface(Player p1, int x) {
+		playerHealthBar.updateHP(p1.getActiveTeam(x).getHP(), p1.getActiveTeam(x).getMaxHP());
+		playerHealthField.setText(p1.getActiveTeam(x).getHP() + " / " + p1.getActiveTeam(x).getMaxHP());
+		revalidate();
+		repaint();
+	}
 	
 }
 

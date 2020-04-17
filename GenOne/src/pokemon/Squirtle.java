@@ -13,7 +13,7 @@ public class Squirtle extends Monsters {
 		this.defense = ((((this.bDefense = 65) * 2 + (this.d = ivGenerator())) * this.level) / 100 ) + 5;
 		this.special = ((((this.bSpecial = 50) * 2 + (this.ss = ivGenerator())) * this.level) / 100 ) + 5;
 		this.maxHp = ((((this.bMaxHP = 44) * 2 + (this.h = ivGenerator())) * this.level) / 100 ) + 10 + this.level;
-		this.hp = maxHp;
+		this.hp = 1; //maxHp;
 		this.speed = ((((this.bSpeed = 43) * 2 + (this.s = ivGenerator())) * this.level) / 100 ) + 5;
 		this.name = "SQUIRTLE";
 		this.catchRate = 45;
