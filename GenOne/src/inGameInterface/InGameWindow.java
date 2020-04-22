@@ -139,9 +139,7 @@ public class InGameWindow extends JFrame {
 					addInventory();
 				}
 				if (button == 4) {
-					/*lpane.remove(0);
-					lpane.revalidate();
-					lpane.repaint();*/
+					p1.getPi().generateItem(1).catchPokemon(battlePanel);
 					
 				}
 			}

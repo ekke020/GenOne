@@ -35,6 +35,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import inGamePlayer.Player;
+import items.Items;
 import pokemon.Monsters;
 
 public class BattleElements extends JPanel {
@@ -192,7 +193,6 @@ public class BattleElements extends JPanel {
 		});
 		timer.start();
 	}
-
 	public void npcDown() {
 		x = 180;
 		i = 50;
