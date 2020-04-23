@@ -49,6 +49,7 @@ public class PokeBall extends Items {
 					System.out.println(y);
 					Double angle = Math.toDegrees(Math.atan2(180 - x, 180 - y));
 					System.out.println(angle);
+					//System.out.println(Math.tan());
 		        	((Timer) e.getSource()).stop();
 				} 
 		        
