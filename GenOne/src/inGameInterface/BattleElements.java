@@ -46,6 +46,7 @@ public class BattleElements extends JPanel {
 	private HealthBar enemyHealthBar;
 	private Lines lines;
 	private Circle circle;
+	private TestLine testLine;
 	
 	private JLabel playerSprite;
 	private JLabel enemySprite;
@@ -371,7 +372,9 @@ public class BattleElements extends JPanel {
 
 	BattleElements(Player p1, Monsters m1) {
 	
-		
+		testLine = new TestLine();
+		testLine.setBounds(0,0, 500, 500);
+		add(testLine);
 		circle = new Circle();
 		circle.setBounds(50, 190, 170, 140);
 		setLayout(null);
@@ -636,11 +639,37 @@ class Lines extends JPanel {
         g4.setStroke(new BasicStroke(5));
         g4.setColor(Color.darkGray);
         g4.draw(new Line2D.Float(0, 29, 200, 29));
-        
+    	
 
 	}
 }
 
+class TestLine extends JPanel {
+	private Color transparent;
+
+	TestLine() {
+		transparent = new Color( 0, 0, 0, 0);
+		setBackground(transparent);
+	}
+	
+	public void paint(Graphics g) {
+		
+		Graphics2D g4 = (Graphics2D) g;
+        g4.setStroke(new BasicStroke(5));
+        g4.setColor(Color.darkGray);
+        g4.draw(new Line2D.Float(130, 300, 320, 110));
+        
+		Graphics2D g5 = (Graphics2D) g;
+		g5.setStroke(new BasicStroke(5));
+		g5.setColor(Color.darkGray);
+		g5.draw(new Line2D.Float(130, 300, 320, 200));
+		
+		Graphics2D g6 = (Graphics2D) g;
+		g6.setStroke(new BasicStroke(5));
+		g6.setColor(Color.darkGray);
+		g6.draw(new Line2D.Float(130, 300, 320, 300));
+	}
+}
 class Circle extends JPanel {
 	private int x = 10;
 	private int y = 10;
@@ -1098,6 +1127,7 @@ class BattleTeamMenu extends JPanel{
 	private InGameListener inGameListener;
 	private Font gameFont;
 	private Color transparent;
+	
 	private JLabel p1s;
 	private InGameFont inGameFont;
 	private HealthBar p1Bar;

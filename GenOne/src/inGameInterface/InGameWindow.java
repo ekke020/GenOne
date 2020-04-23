@@ -2,10 +2,13 @@ package inGameInterface;
 
 
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -82,6 +85,7 @@ public class InGameWindow extends JFrame {
 		//sound = new Sound(filepath);
 		//sound.play();
 	}
+
 	private void addBottomLayer() {
 		bottomLayer = new JLayeredPane();
 		bottomLayer.setBounds(0, 0, 500, 500); 
@@ -140,7 +144,6 @@ public class InGameWindow extends JFrame {
 				}
 				if (button == 4) {
 					p1.getPi().generateItem(1).catchPokemon(battlePanel);
-					
 				}
 			}
 		});

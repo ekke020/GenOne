@@ -1,6 +1,12 @@
 package items;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.geom.Line2D;
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -23,6 +29,7 @@ public class Items {
 	protected int itemEffect;
 	protected int x;
 	protected int y;
+	protected int z;
 	public Items() {
 		
 	}
@@ -48,7 +55,7 @@ public class Items {
 		
 	}
 	protected void itemEffect(int x, int y, int i, int z, BattleElements b1) {
-		itemSprite.setBounds(x, y, i, z);	
+		itemSprite.setBounds(x, y, i, z);
 		b1.getBattleLpane().revalidate();
 		b1.getBattleLpane().repaint();
 	}
@@ -64,4 +71,5 @@ public class Items {
 		System.out.println(id);
         return icon;
 	}
+
 }
