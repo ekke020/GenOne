@@ -55,7 +55,14 @@ public class Monsters implements java.io.Serializable {
 	protected String dexNumber = null;
 	
 	boolean xpEligible = false; // Säger ifall den är berättigad till XP.
+	protected boolean caught;
 	
+	public boolean isCaught() {
+		return caught;
+	}
+	public void setCaught(boolean caught) {
+		this.caught = caught;
+	}
 	public String getRandomIDNo() {
 		return this.randomIDNo;
 	}

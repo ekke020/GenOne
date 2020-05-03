@@ -77,11 +77,10 @@ public class InGameWindow extends JFrame {
 		for (int i = 0; i < 6; i ++)
 			p1.addTeam(generateAndAddTest());
 		
-		
-
 		addBottomLayer();
 		addBattlePanel();
 		addLayerdPane();
+		
 		//sound = new Sound(filepath);
 		//sound.play();
 	}
@@ -143,7 +142,8 @@ public class InGameWindow extends JFrame {
 					addInventory();
 				}
 				if (button == 4) {
-					p1.getPi().generateItem(1).catchPokemon(battlePanel);
+					p1.getPi().generateItem(1).catchPokemon(battlePanel, m1);
+					//battlePanel.shrinkPokemon(m1);
 				}
 			}
 		});
@@ -505,7 +505,73 @@ public class InGameWindow extends JFrame {
 				}
 				// pokeballs
 				else if (p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemType() == 1) {
-					
+					p1.getPi().removeItem(p1.getPi().generateItem(buttonIndex.get(c.getID())), 1);
+					lpane.remove(0);
+					lpane.revalidate();
+					lpane.repaint();
+					textUI.revalidateText();
+					lpaneTwo.remove(1);
+					lpaneTwo.remove(0);
+					lpaneTwo.revalidate();
+					lpaneTwo.repaint();
+					textUI.revalidateText();
+
+					listener = new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if (!(textUI.getTimer().isRunning())) {
+								timer.stop();
+								textUI.setNewText("Red used " + "\n\n" + p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemName(), 0, false);
+								p1.getPi().generateItem(buttonIndex.get(c.getID())).catchPokemon(battlePanel, m1);
+								listener = new ActionListener() {
+
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										if (!(p1.getPi().generateItem(buttonIndex.get(c.getID())).getTimer().isRunning()) && !(battlePanel.getTimer().isRunning()) && !(textUI.getTimer().isRunning())) {
+											timer.stop();
+											textUI.revalidateText();
+											if (m1.isCaught() == false) {
+												textUI.setNewText("The wild " + m1.getName() + "\n\n" + "broke free!", 0, false);
+												listener = new ActionListener() {
+
+													@Override
+													public void actionPerformed(ActionEvent e) {
+														if (!(textUI.getTimer().isRunning())) {
+															timer.stop();
+															textUI.revalidateText();
+															cvw.onlyAI(p1, m1, textUI, battlePanel);
+														}
+														
+													
+													}
+									    		
+												};
+												timer = new Timer(1500,listener);
+												timer.start();
+											}
+											else if (m1.isCaught() == true) {
+												textUI.setNewText(m1.getName() + " was \n\ncaught!", 0, true);
+												cvw.setBattleOver(true);
+											}
+										}
+											
+											
+									}
+									
+								};
+								timer = new Timer(1500,listener);
+								timer.start();
+								//} // if caught == false
+							}
+								
+							
+						}
+			    		
+			    	};
+					timer = new Timer(500,listener);
+					timer.start();
+						
 				}
 				// key items
 				else if (p1.getPi().generateItem(buttonIndex.get(c.getID())).getItemType() == 2) {
@@ -609,7 +675,7 @@ public class InGameWindow extends JFrame {
 		m1[2] = new Squirtle();
 		m1[3] = new Rattata();
 		int x = (int)(Math.random() * ((1 - 1) + 4));
-		return m1[3];
+		return m1[0];
 	}
 	private void next() {
 		//cvw = new CombatVsWild(pa);
@@ -646,13 +712,26 @@ public class InGameWindow extends JFrame {
 		}
 		if (cvw.isBattleOver() == true) {
 			p1.getFirstActiveTeam().removeStageModifier();
-			if (cvw.isBattleWon() == true) {
-			m1.xpGain(p1, m1);
-			// add end of battle interface.
+			if (m1.isCaught() == false) {
+				if (cvw.isBattleWon() == true) {
+					m1.xpGain(p1, m1);
+					// add end of battle interface.
+				}
+				else if (cvw.isBattleWon() == false) {
+					textUI.revalidateText();
+					textUI.setNewText(p1.getName() + " blacked\n\nout!", 0, true);
+				}
 			}
-			else if (cvw.isBattleWon() == false) {
+			else if (m1.isCaught() == true) {
 				textUI.revalidateText();
-				textUI.setNewText(p1.getName() + " blacked\n\nout!", 0, true);
+				textUI.setNewText("New pokedex data will be\n\nadded for " + m1.getName(), 0, true);
+				statsWindow = new StatsWindow(m1, 1, 1);
+				statsWindow.setBounds(0,0,500,330);
+				statsWindow.setBackground(Color.white);
+				bottomLayer.add(statsWindow, 1, 0);
+				bottomLayer.revalidate();
+				bottomLayer.repaint();
+				// Add the pokemon to the players team or the players computer if the team is full. 
 			}
 		}
 	}

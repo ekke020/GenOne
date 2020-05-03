@@ -12,7 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.QuadCurve2D;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 
@@ -75,6 +77,7 @@ public class BattleElements extends JPanel {
 	private int z = 250;
 	private int hp;
 	private int hptwo;
+	private int size;
 	
 	public boolean isMenu() {
 		return menu;
@@ -83,7 +86,7 @@ public class BattleElements extends JPanel {
 		this.menu = menu;
 	}
 	public Timer getTimer() {
-		return this.timer;
+		return timer;
 	}
 	public JLabel getEnemySprite() {
 		return enemySprite;
@@ -256,7 +259,68 @@ public class BattleElements extends JPanel {
 		});
 		timer.start();
 	}
+	public void shrinkPokemon(Monsters m1) {
+		 x = 320;
+		 y = 50;
+		 size = 120;
+		 timer = new Timer(5, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
 
+				if (x % 2 == 0) {
+					y++;
+				}
+				if (size % 2 == 0)
+					x++;
+				size--;
+				if (size != 0)
+					enemySprite.setIcon(loadFrontSprite(m1, size, size));
+				enemySprite.setBounds(x, y, 180, 180);
+		        repaint();
+		        if (size == 0) { // x >= 90
+		        	//System.out.println("this is X: " + x + "this is Y: " + y);
+		        	 ((Timer) e.getSource()).stop();
+		         
+		        }
+			}
+		    
+			
+		 });
+		 timer.start();
+	}
+	public void enlargePokemon(Monsters m1) {
+		 x = 380;
+		 y = 110;
+		 size = 0;
+		 timer = new Timer(5, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+
+				if (x % 2 == 0) {
+					y--;
+				}
+				if (size % 2 == 0)
+					x--;
+				size++;
+				if (size != 0)
+					enemySprite.setIcon(loadFrontSprite(m1, size, size));
+				enemySprite.setBounds(x, y, 180, 180);
+		        repaint();
+		        if (size == 120) { // x >= 90
+		        //	enemySprite.setBounds(320, 50, 180, 180);
+		        	 ((Timer) e.getSource()).stop();
+		         
+		        }
+			}
+		    
+			
+		 });
+		 timer.start();
+	}
 	public void damageTaken(Monsters m1, Player p1, int x) {
 		y = 0;
 		timer = new Timer(10, new ActionListener() {
@@ -284,8 +348,7 @@ public class BattleElements extends JPanel {
 				if (y == 85) 
 					enemySprite.setVisible(false);
 				if (y == 100) 
-					enemySprite.setVisible(true);		
-				System.out.println(y);
+					enemySprite.setVisible(true);
 		        repaint();
 		        if (y > 100) { // x >= 90
 		        	enemySprite.setVisible(true);
@@ -326,8 +389,7 @@ public class BattleElements extends JPanel {
 				if (y == 85) 
 					playerSprite.setVisible(false);
 				if (y == 100) 
-					playerSprite.setVisible(true);		
-				System.out.println(y);
+					playerSprite.setVisible(true);
 		        repaint();
 		        if (y > 100) { // x >= 90
 		        	playerSprite.setVisible(true);
@@ -371,10 +433,7 @@ public class BattleElements extends JPanel {
 	}
 
 	BattleElements(Player p1, Monsters m1) {
-	
-		testLine = new TestLine();
-		testLine.setBounds(0,0, 500, 500);
-		add(testLine);
+
 		circle = new Circle();
 		circle.setBounds(50, 190, 170, 140);
 		setLayout(null);
@@ -386,12 +445,12 @@ public class BattleElements extends JPanel {
 		
 		add(battleLpane);
 		playerSprite = new JLabel();
-		playerSprite.setIcon(loadPlayerBackSprite()); //loadBackSprite(p1)
+		playerSprite.setIcon(loadPlayerBackSprite(180, 180)); //loadBackSprite(p1)
 		//playerSprite.setBounds(50, 190, 170, 140);
 		battleLpane.add(playerSprite, JLayeredPane.DEFAULT_LAYER);
 		
 		enemySprite = new JLabel();
-		enemySprite.setIcon(loadFrontSprite(m1));
+		enemySprite.setIcon(loadFrontSprite(m1, 120, 120));
 		//enemySprite.setBounds(320, 50, 180, 180);
 		battleLpane.add(enemySprite, JLayeredPane.DEFAULT_LAYER);
 		imageSlide();
@@ -504,33 +563,32 @@ public class BattleElements extends JPanel {
 	
         return icon;
 	}
-	private ImageIcon loadPlayerBackSprite() {
+	private ImageIcon loadPlayerBackSprite(int x, int y) {
 		String userDirectory = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Version 1.0 Folder" + File.separator + "Game assets" + File.separator + "Sprites" + File.separator + "characters";
 		File custom = new File(userDirectory);
 		String absoluteP = custom.getAbsolutePath();
 		String imgFile = absoluteP +  File.separator + "Player_Back.png";
 		ImageIcon icon = new ImageIcon(imgFile);
 		Image image = icon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(180, 180,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
+		Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
 		icon = new ImageIcon(newimg);
 	
         return icon;
 	}
-	private ImageIcon loadFrontSprite(Monsters m1) {
+	private ImageIcon loadFrontSprite(Monsters m1, int x, int y) {
 		String userDirectory = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Version 1.0 Folder" + File.separator + "Game assets" + File.separator + "Sprites";
 		File custom = new File(userDirectory);
 		String absoluteP = custom.getAbsolutePath();
 		String imgFile = absoluteP +  File.separator + m1.getID();
 		ImageIcon icon = new ImageIcon(imgFile);
 		Image image = icon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
+		Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
 		icon = new ImageIcon(newimg);
 		
         return icon;
 	}
 	private void updateHealthNPC(Monsters m1,int x) {
 		hp = x;
-		System.out.println("x" + x);
 		hptwo = 1;
 		Timer timer = new Timer(65, new ActionListener() { //45
 
@@ -553,7 +611,6 @@ public class BattleElements extends JPanel {
 	}
 	private void updateHealthPlayer(Player p1,int x) {
 		hp = x;
-		System.out.println("x" + x);
 		hptwo = 1;
 		Timer timer = new Timer(65, new ActionListener() { //45
 
@@ -668,6 +725,10 @@ class TestLine extends JPanel {
 		g6.setStroke(new BasicStroke(5));
 		g6.setColor(Color.darkGray);
 		g6.draw(new Line2D.Float(130, 300, 320, 300));
+		
+		Graphics2D g7 = (Graphics2D) g;
+		g7.setStroke(new BasicStroke(5));
+		g7.draw(new CubicCurve2D.Double(130.0,300.0, 200.0, 70.0, 300.0, 150.0, 400.0, 190.0));
 	}
 }
 class Circle extends JPanel {
@@ -782,7 +843,6 @@ class TextUI extends JPanel {
 				} catch (StringIndexOutOfBoundsException ex) {
 					ex.printStackTrace();
 				}
-				System.out.println(charIndex);
 		        charIndex++;
 		        if (charIndex >= text.length()) {
 		        	setCont(cont);
@@ -1122,1272 +1182,7 @@ class PlayerAttackMenuUI extends JPanel {
 	}
 	
 }
-class BattleTeamMenu extends JPanel{
-	
-	private InGameListener inGameListener;
-	private Font gameFont;
-	private Color transparent;
-	
-	private JLabel p1s;
-	private InGameFont inGameFont;
-	private HealthBar p1Bar;
-	
-	private JTextField p1n;
-	private JTextField hpt;
-	private JTextField hp1;
-	private JTextField lvl1;
-	
-	private JButton stats;
-	private JButton swap;
-	private JButton back;
-	BattleTeamMenu(Player p1) {
-		setLayout(null);
-		setBackground(Color.white);
-		transparent = new Color( 0, 0, 0, 0);
-		
-		p1s = new JLabel(loadMenuSprite(p1.getActiveTeam(0).getMenuID()));
-		p1s.setBounds(10, 2, 45, 45);
-		add(p1s); // Menu sprite
-		inGameFont = new InGameFont(gameFont, 1);
-		hpt = new JTextField("HP:");
-		hpt.setBounds(80, 31, 40, 10);
-		hpt.setBorder(BorderFactory.createEmptyBorder());
-		hpt.setBackground(transparent);
-		hpt.setFont(inGameFont.getFont());
-		hpt.setEditable(false);
-		add(hpt); // HP
-		p1Bar = new HealthBar(p1.getActiveTeam(0).getHP(), p1.getActiveTeam(0).getMaxHP());
-		p1Bar.setBounds(120, 32, 190, 75);
-		add(p1Bar); // HP bar
-		inGameFont = new InGameFont(gameFont, 0);
-		p1n = new JTextField(p1.getActiveTeam(0).getName());
-		p1n.setBorder(BorderFactory.createEmptyBorder());
-		p1n.setEditable(false);
-		p1n.setFont(inGameFont.getFont());
-		p1n.setBounds(70, 2, 200, 30);
-		add(p1n); // Name
-		inGameFont = new InGameFont(gameFont, 1);
-		hp1 = new JTextField(p1.getActiveTeam(0).getHP() + " / " + p1.getActiveTeam(0).getMaxHP());
-		hp1.setBounds(300, 31, 108, 10);
-		hp1.setBorder(BorderFactory.createEmptyBorder());
-		hp1.setBackground(transparent);
-		hp1.setFont(inGameFont.getFont());
-		hp1.setEditable(false);
-		add(hp1); // HP / MAXHP
-		inGameFont = new InGameFont(gameFont, 0);
-		lvl1 = new JTextField(":L " + p1.getActiveTeam(0).getLevel());
-		lvl1.setBounds(285, 5, 93, 20);
-		lvl1.setBorder(BorderFactory.createEmptyBorder());
-		lvl1.setBackground(transparent);
-		lvl1.setFont(inGameFont.getFont());
-		lvl1.setEditable(false);
-		add(lvl1); // Level
-		inGameFont = new InGameFont(gameFont, 4);
-		swap = new JButton("SWAP");
-		swap.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, 0.0);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		swap.setFont(inGameFont.getFont());
-		swap.setHorizontalAlignment(SwingConstants.CENTER);
-		swap.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-		swap.setBounds(407, 6, 45, 40);
-		add(swap);
-		stats = new JButton("STATS");
-		stats.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, 0.1);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		stats.setFont(inGameFont.getFont());
-		stats.setHorizontalAlignment(SwingConstants.CENTER);
-		stats.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-		stats.setBounds(454, 6, 45, 40);
-		add(stats);
-		/////// END OF FIRST ROW ///////
-		if (p1.getActiveTeam(1) != null) {
-			p1s = new JLabel(loadMenuSprite(p1.getActiveTeam(1).getMenuID()));
-			p1s.setBounds(10, 57, 45, 45);
-			add(p1s); // Menu sprite
-			inGameFont = new InGameFont(gameFont, 1);
-			hpt = new JTextField("HP:");
-			hpt.setBounds(80, 86, 40, 10);
-			hpt.setBorder(BorderFactory.createEmptyBorder());
-			hpt.setBackground(transparent);
-			hpt.setFont(inGameFont.getFont());
-			hpt.setEditable(false);
-			add(hpt); // HP
-			p1Bar = new HealthBar(p1.getActiveTeam(1).getHP(), p1.getActiveTeam(1).getMaxHP());
-			p1Bar.setBounds(120, 87, 190, 75);
-			add(p1Bar); // Healthbar
-			inGameFont = new InGameFont(gameFont, 0);
-			p1n = new JTextField(p1.getActiveTeam(1).getName());
-			p1n.setBorder(BorderFactory.createEmptyBorder());
-			p1n.setEditable(false);
-			p1n.setFont(inGameFont.getFont());
-			p1n.setBounds(70, 57, 200, 30);
-			add(p1n); // Name
-			inGameFont = new InGameFont(gameFont, 1);
-			hp1 = new JTextField(p1.getActiveTeam(1).getHP() + " / " + p1.getActiveTeam(1).getMaxHP());
-			hp1.setBounds(300, 86, 108, 10);
-			hp1.setBorder(BorderFactory.createEmptyBorder());
-			hp1.setBackground(transparent);
-			hp1.setFont(inGameFont.getFont());
-			hp1.setEditable(false);
-			add(hp1); // HP / MAXHP
-			inGameFont = new InGameFont(gameFont, 0);
-			lvl1 = new JTextField(":L " + p1.getActiveTeam(1).getLevel());
-			lvl1.setBounds(285, 60, 93, 20);
-			lvl1.setBorder(BorderFactory.createEmptyBorder());
-			lvl1.setBackground(transparent);
-			lvl1.setFont(inGameFont.getFont());
-			lvl1.setEditable(false);
-			add(lvl1); // Level
-			inGameFont = new InGameFont(gameFont, 4);
-			swap = new JButton("SWAP");
-			swap.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 1.0);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			swap.setFont(inGameFont.getFont());
-			swap.setHorizontalAlignment(SwingConstants.CENTER);
-			swap.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			swap.setBounds(407, 61, 45, 40);
-			add(swap);
-			stats = new JButton("STATS");
-			stats.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 1.1);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			stats.setFont(inGameFont.getFont());
-			stats.setHorizontalAlignment(SwingConstants.CENTER);
-			stats.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			stats.setBounds(454, 61, 45, 40);
-			add(stats);
-		} 		/////// END OF SECOND ROW ///////
-		if (p1.getActiveTeam(2) != null) {
-			p1s = new JLabel(loadMenuSprite(p1.getActiveTeam(2).getMenuID()));
-			p1s.setBounds(10, 112, 45, 45);
-			add(p1s); // Menu sprite
-			inGameFont = new InGameFont(gameFont, 1);
-			hpt = new JTextField("HP:");
-			hpt.setBounds(80, 141, 40, 10);
-			hpt.setBorder(BorderFactory.createEmptyBorder());
-			hpt.setBackground(transparent);
-			hpt.setFont(inGameFont.getFont());
-			hpt.setEditable(false);
-			add(hpt); // HP
-			p1Bar = new HealthBar(p1.getActiveTeam(2).getHP(), p1.getActiveTeam(2).getMaxHP());
-			p1Bar.setBounds(120, 142, 190, 75);
-			add(p1Bar); // HealthBar
-			inGameFont = new InGameFont(gameFont, 0);
-			p1n = new JTextField(p1.getActiveTeam(2).getName());
-			p1n.setBorder(BorderFactory.createEmptyBorder());
-			p1n.setEditable(false);
-			p1n.setFont(inGameFont.getFont());
-			p1n.setBounds(70, 112, 200, 30);
-			add(p1n); // Name
-			inGameFont = new InGameFont(gameFont, 1);
-			hp1 = new JTextField(p1.getActiveTeam(2).getHP() + " / " + p1.getActiveTeam(2).getMaxHP());
-			hp1.setBounds(300, 141, 108, 10);
-			hp1.setBorder(BorderFactory.createEmptyBorder());
-			hp1.setBackground(transparent);
-			hp1.setFont(inGameFont.getFont());
-			hp1.setEditable(false);
-			add(hp1); // HP / MAXHP
-			inGameFont = new InGameFont(gameFont, 0);
-			lvl1 = new JTextField(":L " + p1.getActiveTeam(2).getLevel());
-			lvl1.setBounds(285, 115, 93, 20);
-			lvl1.setBorder(BorderFactory.createEmptyBorder());
-			lvl1.setBackground(transparent);
-			lvl1.setFont(inGameFont.getFont());
-			lvl1.setEditable(false);
-			add(lvl1); // Level
-			inGameFont = new InGameFont(gameFont, 4);
-			swap = new JButton("SWAP");
-			swap.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 2.0);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			swap.setFont(inGameFont.getFont());
-			swap.setHorizontalAlignment(SwingConstants.CENTER);
-			swap.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			swap.setBounds(407, 116, 45, 40);
-			add(swap);
-			stats = new JButton("STATS");
-			stats.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 2.1);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			stats.setFont(inGameFont.getFont());
-			stats.setHorizontalAlignment(SwingConstants.CENTER);
-			stats.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			stats.setBounds(454, 116, 45, 40);
-			add(stats);
-		} 		/////// END OF THIRD ROW ///////
-		if (p1.getActiveTeam(3) != null) {
-			p1s = new JLabel(loadMenuSprite(p1.getActiveTeam(3).getMenuID()));
-			p1s.setBounds(10, 167, 45, 45);
-			add(p1s); // Menu sprite
-			inGameFont = new InGameFont(gameFont, 1);
-			hpt = new JTextField("HP:");
-			hpt.setBounds(80, 196, 40, 10);
-			hpt.setBorder(BorderFactory.createEmptyBorder());
-			hpt.setBackground(transparent);
-			hpt.setFont(inGameFont.getFont());
-			hpt.setEditable(false);
-			add(hpt); // HP
-			p1Bar = new HealthBar(p1.getActiveTeam(3).getHP(), p1.getActiveTeam(3).getMaxHP());
-			p1Bar.setBounds(120, 197, 190, 75);
-			add(p1Bar);
-			inGameFont = new InGameFont(gameFont, 0);
-			p1n = new JTextField(p1.getActiveTeam(3).getName());
-			p1n.setBorder(BorderFactory.createEmptyBorder());
-			p1n.setEditable(false);
-			p1n.setFont(inGameFont.getFont());
-			p1n.setBounds(70, 167, 200, 30);
-			add(p1n); // Name
-			inGameFont = new InGameFont(gameFont, 1);
-			hp1 = new JTextField(p1.getActiveTeam(3).getHP() + " / " + p1.getActiveTeam(3).getMaxHP());
-			hp1.setBounds(300, 196, 108, 10);
-			hp1.setBorder(BorderFactory.createEmptyBorder());
-			hp1.setBackground(transparent);
-			hp1.setFont(inGameFont.getFont());
-			hp1.setEditable(false);
-			add(hp1); // HP / MAXHP
-			inGameFont = new InGameFont(gameFont, 0);
-			lvl1 = new JTextField(":L " + p1.getActiveTeam(3).getLevel());
-			lvl1.setBounds(285, 170, 93, 20);
-			lvl1.setBorder(BorderFactory.createEmptyBorder());
-			lvl1.setBackground(transparent);
-			lvl1.setFont(inGameFont.getFont());
-			lvl1.setEditable(false);
-			add(lvl1); // Level
-			inGameFont = new InGameFont(gameFont, 4);
-			swap = new JButton("SWAP");
-			swap.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 3.0);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			swap.setFont(inGameFont.getFont());
-			swap.setHorizontalAlignment(SwingConstants.CENTER);
-			swap.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			swap.setBounds(407, 171, 45, 40);
-			add(swap);
-			stats = new JButton("STATS");
-			stats.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 3.1);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			stats.setFont(inGameFont.getFont());
-			stats.setHorizontalAlignment(SwingConstants.CENTER);
-			stats.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			stats.setBounds(454, 171, 45, 40);
-			add(stats);
-		} 		/////// END OF FOURTH ROW ///////
-		if (p1.getActiveTeam(4) != null) {
-			p1s = new JLabel(loadMenuSprite(p1.getActiveTeam(4).getMenuID()));
-			p1s.setBounds(10, 222, 45, 45);
-			add(p1s); // Menu sprite
-			inGameFont = new InGameFont(gameFont, 1);
-			hpt = new JTextField("HP:");
-			hpt.setBounds(80, 251, 40, 10);
-			hpt.setBorder(BorderFactory.createEmptyBorder());
-			hpt.setBackground(transparent);
-			hpt.setFont(inGameFont.getFont());
-			hpt.setEditable(false);
-			add(hpt); // HP
-			p1Bar = new HealthBar(p1.getActiveTeam(4).getHP(), p1.getActiveTeam(4).getMaxHP());
-			p1Bar.setBounds(120, 252, 190, 75);
-			add(p1Bar);
-			inGameFont = new InGameFont(gameFont, 0);
-			p1n = new JTextField(p1.getActiveTeam(4).getName());
-			p1n.setBorder(BorderFactory.createEmptyBorder());
-			p1n.setEditable(false);
-			p1n.setFont(inGameFont.getFont());
-			p1n.setBounds(70, 222, 200, 30);
-			add(p1n); // Name
-			inGameFont = new InGameFont(gameFont, 1);
-			hp1 = new JTextField(p1.getActiveTeam(4).getHP() + " / " + p1.getActiveTeam(4).getMaxHP());
-			hp1.setBounds(300, 251, 108, 10);
-			hp1.setBorder(BorderFactory.createEmptyBorder());
-			hp1.setBackground(transparent);
-			hp1.setFont(inGameFont.getFont());
-			hp1.setEditable(false);
-			add(hp1); // HP / MAXHP
-			inGameFont = new InGameFont(gameFont, 0);
-			lvl1 = new JTextField(":L " + p1.getActiveTeam(4).getLevel());
-			lvl1.setBounds(285, 225, 93, 20);
-			lvl1.setBorder(BorderFactory.createEmptyBorder());
-			lvl1.setBackground(transparent);
-			lvl1.setFont(inGameFont.getFont());
-			lvl1.setEditable(false);
-			add(lvl1); // Level
-			inGameFont = new InGameFont(gameFont, 4);
-			swap = new JButton("SWAP");
-			swap.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 4.0);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			swap.setFont(inGameFont.getFont());
-			swap.setHorizontalAlignment(SwingConstants.CENTER);
-			swap.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			swap.setBounds(407, 226, 45, 40);
-			add(swap);
-			stats = new JButton("STATS");
-			stats.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 4.1);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			stats.setFont(inGameFont.getFont());
-			stats.setHorizontalAlignment(SwingConstants.CENTER);
-			stats.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			stats.setBounds(454, 226, 45, 40);
-			add(stats);
-		} 		/////// END OF FIFTH ROW ///////
-		if (p1.getActiveTeam(5) != null) {
-			p1s = new JLabel(loadMenuSprite(p1.getActiveTeam(5).getMenuID()));
-			p1s.setBounds(10, 277, 45, 45);
-			add(p1s); // Menu sprite
-			inGameFont = new InGameFont(gameFont, 1);
-			hpt = new JTextField("HP:");
-			hpt.setBounds(80, 306, 40, 10);
-			hpt.setBorder(BorderFactory.createEmptyBorder());
-			hpt.setBackground(transparent);
-			hpt.setFont(inGameFont.getFont());
-			hpt.setEditable(false);
-			add(hpt); // HP
-			p1Bar = new HealthBar(p1.getActiveTeam(5).getHP(), p1.getActiveTeam(5).getMaxHP());
-			p1Bar.setBounds(120, 307, 190, 75);
-			add(p1Bar);
-			inGameFont = new InGameFont(gameFont, 0);
-			p1n = new JTextField(p1.getActiveTeam(5).getName());
-			p1n.setBorder(BorderFactory.createEmptyBorder());
-			p1n.setEditable(false);
-			p1n.setFont(inGameFont.getFont());
-			p1n.setBounds(70, 277, 200, 30);
-			add(p1n); // Name
-			inGameFont = new InGameFont(gameFont, 1);
-			hp1 = new JTextField(p1.getActiveTeam(5).getHP() + " / " + p1.getActiveTeam(5).getMaxHP());
-			hp1.setBounds(300, 306, 108, 10);
-			hp1.setBorder(BorderFactory.createEmptyBorder());
-			hp1.setBackground(transparent);
-			hp1.setFont(inGameFont.getFont());
-			hp1.setEditable(false);
-			add(hp1); // HP / MAXHP
-			inGameFont = new InGameFont(gameFont, 0);
-			lvl1 = new JTextField(":L " + p1.getActiveTeam(5).getLevel());
-			lvl1.setBounds(285, 280, 93, 20);
-			lvl1.setBorder(BorderFactory.createEmptyBorder());
-			lvl1.setBackground(transparent);
-			lvl1.setFont(inGameFont.getFont());
-			lvl1.setEditable(false);
-			add(lvl1); // Level
-			inGameFont = new InGameFont(gameFont, 4);
-			swap = new JButton("SWAP");
-			swap.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 5.0);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			swap.setFont(inGameFont.getFont());
-			swap.setHorizontalAlignment(SwingConstants.CENTER);
-			swap.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			swap.setBounds(407, 281, 45, 40);
-			add(swap);
-			stats = new JButton("STATS");
-			stats.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					InGameClicks gc = new InGameClicks(this, 5.1);
-						
-					if (inGameListener != null) {
-						inGameListener.formEventOccurred(gc);
-					}	
-						
-				}
-					
-			});
-			stats.setFont(inGameFont.getFont());
-			stats.setHorizontalAlignment(SwingConstants.CENTER);
-			stats.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-			stats.setBounds(454, 281, 45, 40);
-			add(stats);
-		} 		/////// END OF SIXTH ROW ///////
-	}
-	public BattleTeamMenu(TextUI textUI) {
-		setLayout(null);
-		setBackground(Color.white);
-		
-		textUI.setInstantText("Choose  a  POKEMON.");
-		inGameFont = new InGameFont(gameFont, 1);
-		
-		back = new JButton("Back");
-		back.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, 0);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		back.setFont(inGameFont.getFont());
-		back.setHorizontalAlignment(SwingConstants.CENTER);
-		//back.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
-		back.setBounds(0, 0, 70, 54);
-		add(back);
-	}
-	private ImageIcon loadMenuSprite(String id) {
-		String userDirectory = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Version 1.0 Folder" + File.separator + "Game assets" + File.separator + "Sprites" + File.separator + "menu";
-		File custom = new File(userDirectory);
-		String absoluteP = custom.getAbsolutePath();
-		String imgFile = absoluteP + File.separator + id;
-		ImageIcon icon = new ImageIcon(imgFile);
-		Image image = icon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(45, 45,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
-		icon = new ImageIcon(newimg);
-		System.out.println(id);
-        return icon;
-	}
-	public void setInGameListener(InGameListener listener) {
-		this.inGameListener = listener;
-	}
-}
-class StatsWindow extends JPanel{
-	
-	private InGameListener inGameListener;
-	
-	private JToggleButton toggleButton;
-	private JButton back;
-	private JButton p1;
-	private JButton p2;
-	
-	private JLabel sprite;
-	private JLabel stats;
-	private JLabel healthStatus;
-	private JLabel healthExperience;
-	private JLabel generalInfo;
-	private JLabel fillLabel;
-	private JLabel moves;
-	
-	private JTextField statsField;
-	private JTextField dexNumber;
-	private JTextField nameField;
-	private JTextField statusField;
-	private JTextField hp;
-	private JTextField level;
-	private JTextField exp;
-	private JTextField type;
-	private JTextField idNo;
-	private JTextField move;
-	
-	private Font gameFont;
-	private InGameFont inGameFont;
-	private HealthBar healthBar;
-	
-	private int lvl;
-	
-	StatsWindow() {
-		
-		setLayout(null);
-		setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 1);
-		
-		/*toggleButton = new JToggleButton("Page 2");
-		toggleButton.setFont(inGameFont.getFont());
-		toggleButton.setBackground(Color.darkGray);
-		toggleButton.setBounds(205, 10, 80, 40);
-		toggleButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, true);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		add(toggleButton); */
-		p1 = new JButton("P1");
-		p1.setFont(inGameFont.getFont());
-		p1.setBackground(Color.darkGray);
-		p1.setBounds(205, 10, 40, 40);
-		p1.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, 1, false);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		add(p1);
-		
-		p2 = new JButton("P2");
-		p2.setFont(inGameFont.getFont());
-		p2.setBackground(Color.darkGray);
-		p2.setBounds(250, 10, 40, 40);
-		p2.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, 2, true);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		add(p2);
-		
-		back = new JButton("B");
-		back.setFont(inGameFont.getFont());
-		back.setBackground(Color.darkGray);
-		back.setBounds(455, 10, 40, 40);
-		back.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				InGameClicks gc = new InGameClicks(this, 0);
-					
-				if (inGameListener != null) {
-					inGameListener.formEventOccurred(gc);
-				}	
-					
-			}
-				
-		});
-		add(back);
-		
-	}
-	StatsWindow(Monsters m1, int x) {
-		
-		setLayout(null);
-		setBackground(Color.white);
-		
-		inGameFont = new InGameFont(gameFont, 5);
-		
-		EmptyBorder emptyBorder = new EmptyBorder(10,7,10,7);
-		BevelBorder lowerBevel = new BevelBorder(BevelBorder.LOWERED);
-		LineBorder outerLine = new LineBorder(Color.DARK_GRAY);
-		
-        CompoundBorder outter = new CompoundBorder(outerLine, lowerBevel);
-        CompoundBorder inner = new CompoundBorder(outter, emptyBorder);
-        
-        //////// SPRITE /////////
-		sprite = new JLabel(loadFrontSprite(m1));
-		sprite.setBounds(40, 40, 140, 140);
-		add(sprite);
-		/////// DEXNUMBER ////////
-		dexNumber = new JTextField("No. " + m1.getDexNumber());
-		dexNumber.setSize(130, 30);
-		dexNumber.setBounds(30, 190, 130, 30);
-		dexNumber.setFont(inGameFont.getFont());
-		dexNumber.setEditable(false);
-		dexNumber.setBackground(Color.white);
-		dexNumber.setHighlighter(null);
-		dexNumber.setBorder(BorderFactory.createEmptyBorder());
-		add(dexNumber);
-		/////// HEALTH&EXP ////////
-		healthExperience = new JLabel();
-		healthExperience.setBounds(190, 20, 300, 188); // (40, 40, 140, 140);
-		healthExperience.setBorder(BorderFactory.createMatteBorder(0, 0, 10, 5, Color.DARK_GRAY));
-		healthExperience.setLayout(null);
-		add(healthExperience);
-		/////// FILLERS ////////
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(0, 178, 5, 8);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthExperience.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(5, 178, 5, 5);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthExperience.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(10, 178, 5, 3);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthExperience.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(15, 178, 280, 5);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthExperience.add(fillLabel);
-		/////// NAMEFIELD ////////
-		nameField = new JTextField(m1.getName());
-		nameField.setSize(295, 27);
-		nameField.setBounds(10, 0, 295, 27);
-		inGameFont = new InGameFont(gameFont, 3);
-		nameField.setFont(inGameFont.getFont());
-		nameField.setEditable(false);
-		nameField.setBackground(Color.white);
-		nameField.setHighlighter(null);
-		nameField.setBorder(BorderFactory.createEmptyBorder());
-		healthExperience.add(nameField);
-		/////// EXPFIELD ////////
-		exp = new JTextField("EXP POINTS");
-		exp.setSize(250, 27);
-		exp.setBounds(10, 54, 250, 27); 
-		inGameFont = new InGameFont(gameFont, 3);
-		exp.setFont(inGameFont.getFont());
-		exp.setEditable(false);
-		exp.setBackground(Color.white);
-		exp.setHighlighter(null);
-		exp.setBorder(BorderFactory.createEmptyBorder());
-		healthExperience.add(exp);
-		
-		exp = new JTextField(Integer.toString(m1.getXP())); 
-		exp.setSize(200, 20);
-		exp.setBounds(95, 81, 200, 20);
-		inGameFont = new InGameFont(gameFont, 0);
-		exp.setFont(inGameFont.getFont());
-		exp.setEditable(false);
-		exp.setBackground(Color.white);
-		exp.setHighlighter(null);
-		exp.setBorder(BorderFactory.createEmptyBorder());
-		exp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		healthExperience.add(exp);
-		/////// LEVELFIELD ////////
-		level = new JTextField("LEVEL UP");
-		level.setSize(250, 27);
-		level.setBounds(10, 108, 250, 27); 
-		inGameFont = new InGameFont(gameFont, 3);
-		level.setFont(inGameFont.getFont());
-		level.setEditable(false);
-		level.setBackground(Color.white);
-		level.setHighlighter(null);
-		level.setBorder(BorderFactory.createEmptyBorder());
-		healthExperience.add(level);
-		
-		lvl = m1.getLevel() + 1;
-		level = new JTextField(":L" + lvl);  
-		level.setSize(102, 20);
-		level.setBounds(193, 135, 102, 20);
-		inGameFont = new InGameFont(gameFont, 0);
-		level.setFont(inGameFont.getFont());
-		level.setEditable(false);
-		level.setBackground(Color.white);
-		level.setHighlighter(null);
-		level.setBorder(BorderFactory.createEmptyBorder());
-		level.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		healthExperience.add(level);
-		
-		level = new JTextField("to");  
-		level.setSize(32, 12);
-		level.setBounds(167, 143, 32, 12);
-		inGameFont = new InGameFont(gameFont, 1);
-		level.setFont(inGameFont.getFont());
-		level.setEditable(true);
-		level.setBackground(Color.white);
-		level.setHighlighter(null);
-		level.setBorder(BorderFactory.createEmptyBorder());
-		healthExperience.add(level);
-		
-		lvl = m1.getEXPToLVL(m1.getLevel()) - m1.getXP();
-		System.out.println(m1.getEXPToLVL(m1.getLevel()) - m1.getXP());
-		level = new JTextField(Integer.toString(lvl));  
-		level.setSize(171, 20);
-		level.setBounds(0, 135, 171, 20);
-		inGameFont = new InGameFont(gameFont, 0);
-		level.setFont(inGameFont.getFont());
-		level.setEditable(true);
-		level.setBackground(Color.white);
-		level.setHighlighter(null);
-		level.setBorder(BorderFactory.createEmptyBorder());
-		level.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		healthExperience.add(level);
-		//////// MOVEFIELD /////////
-		moves = new JLabel();
-		moves.setBounds(10, 220, 480, 200);
-		moves.setBorder(inner);
-		moves.setLayout(null);
-		add(moves);
-		// Move 1
-		move = new JTextField(m1.getMoves(0).getName());  
-		move.setSize(420, 20);
-		move.setBounds(30, 4, 420, 20);
-		inGameFont = new InGameFont(gameFont, 5);
-		move.setFont(inGameFont.getFont());
-		move.setEditable(true);
-		move.setBackground(Color.white);
-		move.setHighlighter(null);
-		move.setBorder(BorderFactory.createEmptyBorder());
-		moves.add(move);
-		// PP
-		move = new JTextField("PP");  
-		move.setSize(55, 20);
-		move.setBounds(290, 24, 55, 20);
-		inGameFont = new InGameFont(gameFont, 5);
-		move.setFont(inGameFont.getFont());
-		move.setEditable(true);
-		move.setBackground(Color.white);
-		move.setHighlighter(null);
-		move.setBorder(BorderFactory.createEmptyBorder());
-		moves.add(move);
-		
-		move = new JTextField(m1.getMoves(0).getPP() + "/" + m1.getMoves(0).getMaxPP());  
-		move.setSize(140, 20);
-		move.setBounds(330, 24, 140, 20);
-		inGameFont = new InGameFont(gameFont, 5);
-		move.setFont(inGameFont.getFont());
-		move.setEditable(true);
-		move.setBackground(Color.white);
-		move.setHighlighter(null);
-		move.setBorder(BorderFactory.createEmptyBorder());
-		move.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		moves.add(move);
-		// Move 2
-		if (m1.getMoves(1) != null) {
-			move = new JTextField(m1.getMoves(1).getName());  
-			move.setSize(420, 20);
-			move.setBounds(30, 54, 420, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			moves.add(move);
-			// PP
-			move = new JTextField("PP");  
-			move.setSize(55, 20);
-			move.setBounds(290, 74, 55, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			moves.add(move);
-			
-			move = new JTextField(m1.getMoves(1).getPP() + "/" + m1.getMoves(1).getMaxPP());  
-			move.setSize(140, 20);
-			move.setBounds(330, 74, 140, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			move.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-			moves.add(move);
-		}
-		// Move 3
-		if (m1.getMoves(2) != null) {
-			move = new JTextField(m1.getMoves(2).getName());  
-			move.setSize(420, 20);
-			move.setBounds(30, 104, 420, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			moves.add(move);
-			// PP
-			move = new JTextField("PP");  
-			move.setSize(55, 20);
-			move.setBounds(290, 124, 55, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			moves.add(move);
-			
-			move = new JTextField(m1.getMoves(2).getPP() + "/" + m1.getMoves(2).getMaxPP());  
-			move.setSize(140, 20);
-			move.setBounds(330, 124, 140, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			move.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-			moves.add(move);
-		}
-		// Move 4
-		if (m1.getMoves(3) != null) {
-			move = new JTextField(m1.getMoves(3).getName());  
-			move.setSize(420, 20);
-			move.setBounds(30, 154, 420, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			moves.add(move);
-			// PP
-			move = new JTextField("PP");  
-			move.setSize(55, 20);
-			move.setBounds(290, 174, 55, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			moves.add(move);
-			
-			move = new JTextField(m1.getMoves(3).getPP() + "/" + m1.getMoves(3).getMaxPP());  
-			move.setSize(140, 20);
-			move.setBounds(330, 174, 140, 20);
-			inGameFont = new InGameFont(gameFont, 5);
-			move.setFont(inGameFont.getFont());
-			move.setEditable(true);
-			move.setBackground(Color.white);
-			move.setHighlighter(null);
-			move.setBorder(BorderFactory.createEmptyBorder());
-			move.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-			moves.add(move);
-		}
-		
-	}
-	StatsWindow(Monsters m1) {
-		
-		setLayout(null);
-		setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		
-		EmptyBorder emptyBorder = new EmptyBorder(10,7,10,7);
-		BevelBorder lowerBevel = new BevelBorder(BevelBorder.LOWERED);
-		LineBorder outerLine = new LineBorder(Color.DARK_GRAY);
-		
-        CompoundBorder outter = new CompoundBorder(outerLine, lowerBevel);
-        CompoundBorder inner = new CompoundBorder(outter, emptyBorder);
-		
-        //////// SPRITE /////////
-		sprite = new JLabel(loadFrontSprite(m1));
-		sprite.setBounds(40, 40, 140, 140);
-		add(sprite);
-		/////// DEXNUMBER ////////
-		dexNumber = new JTextField("No. " + m1.getDexNumber());
-		dexNumber.setSize(130, 30);
-		dexNumber.setBounds(30, 190, 130, 30);
-		dexNumber.setFont(inGameFont.getFont());
-		dexNumber.setEditable(false);
-		dexNumber.setBackground(Color.white);
-		dexNumber.setHighlighter(null);
-		dexNumber.setBorder(BorderFactory.createEmptyBorder());
-		add(dexNumber);
-		//////// STATSFIELD /////////
-		stats = new JLabel();
-		stats.setBounds(10, 220, 200, 200);
-		stats.setBorder(inner);
-		stats.setLayout(null);
-		add(stats);
-		/////// ATTACK STAT ////////
-		statsField = new JTextField("ATTACK");
-		statsField.setSize(140, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(10, 6, 140, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		
-		statsField = new JTextField(Integer.toString(m1.getAttack()));
-		statsField.setSize(74, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(120, 26, 74, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		/////// DEFENSE STAT ////////
-		statsField = new JTextField("DEFENSE");
-		statsField.setSize(149, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(10, 56, 149, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		
-		statsField = new JTextField(Integer.toString(m1.getDefense()));
-		statsField.setSize(74, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(120, 76, 74, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		/////// SPEED STAT ////////
-		statsField = new JTextField("SPEED");
-		statsField.setSize(130, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(10, 106, 130, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		
-		statsField = new JTextField(Integer.toString(m1.getSpeed()));
-		statsField.setSize(74, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(120, 126, 74, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		/////// SPECIAL STAT ////////
-		statsField = new JTextField("SPECIAL");
-		statsField.setSize(145, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(10, 156, 145, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		
-		statsField = new JTextField(Integer.toString(m1.getSpecial()));
-		statsField.setSize(74, 20);
-		statsField.setFont(inGameFont.getFont());
-		statsField.setBounds(120, 176, 74, 20);
-		statsField.setEditable(false);
-		statsField.setBackground(Color.white);
-		statsField.setHighlighter(null);
-		statsField.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		statsField.setBorder(BorderFactory.createEmptyBorder());
-		stats.add(statsField);
-		/////// HEALTH&STATUS ////////
-		healthStatus = new JLabel();
-		healthStatus.setBounds(190, 20, 300, 188); // (40, 40, 140, 140);
-		healthStatus.setBorder(BorderFactory.createMatteBorder(0, 0, 10, 5, Color.DARK_GRAY));
-		healthStatus.setLayout(null);
-		add(healthStatus);
-		/////// FILLERS ////////
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(0, 178, 5, 8);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthStatus.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(5, 178, 5, 5);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthStatus.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(10, 178, 5, 3);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		healthStatus.add(fillLabel);
-		/////// NAMEFIELD ////////
-		nameField = new JTextField(m1.getName());
-		nameField.setSize(295, 27);
-		nameField.setBounds(10, 0, 295, 27);
-		inGameFont = new InGameFont(gameFont, 3);
-		nameField.setFont(inGameFont.getFont());
-		nameField.setEditable(false);
-		nameField.setBackground(Color.white);
-		nameField.setHighlighter(null);
-		nameField.setBorder(BorderFactory.createEmptyBorder());
-		healthStatus.add(nameField);
-		/////// STATUSFIELD ////////
-		statusField = new JTextField("STATUS/OK");
-		statusField.setSize(285, 40);
-		statusField.setBounds(15, 143, 280, 40);
-		inGameFont = new InGameFont(gameFont, 3);
-		statusField.setFont(inGameFont.getFont());
-		statusField.setEditable(false);
-		statusField.setBackground(Color.white);
-		statusField.setHighlighter(null);
-		statusField.setBorder(BorderFactory.createEmptyBorder());
-		healthStatus.add(statusField);
-		/////// HP: ////////
-		inGameFont = new InGameFont(gameFont, 1);
-		hp = new JTextField("HP:");
-		hp.setBounds(80, 60, 40, 10);
-		hp.setBorder(BorderFactory.createEmptyBorder());
-		hp.setHighlighter(null);
-		hp.setBackground(Color.white);
-		hp.setFont(inGameFont.getFont());
-		hp.setEditable(false);
-		healthStatus.add(hp); 
-		/////// HEALTHBAR ////////
-		healthBar = new HealthBar(m1.getHP(), m1.getMaxHP());
-		healthBar.setBounds(120, 60, 190, 10);
-		healthStatus.add(healthBar);
-		/////// HP/MAXHP ////////
-		inGameFont = new InGameFont(gameFont, 5);
-		hp = new JTextField(m1.getHP() + " / " + m1.getMaxHP());
-		hp.setBounds(130, 75, 165, 20);
-		hp.setBorder(BorderFactory.createEmptyBorder());
-		hp.setHighlighter(null);
-		hp.setBackground(Color.white);
-		hp.setFont(inGameFont.getFont());
-		hp.setEditable(false);
-		healthStatus.add(hp);
-		/////// LEVEL ////////
-		inGameFont = new InGameFont(gameFont, 0);
-		level = new JTextField(":L " + m1.getLevel());
-		level.setBounds(150, 30, 96, 20);
-		level.setBorder(BorderFactory.createEmptyBorder());
-		level.setHighlighter(null);
-		level.setBackground(Color.white);
-		level.setFont(inGameFont.getFont());
-		level.setEditable(false);
-		healthStatus.add(level); 
-		/////// GENERALINFO ////////
-		generalInfo = new JLabel();
-		generalInfo.setBounds(220, 240, 230, 180); // 220, 240, 270, 180
-		generalInfo.setBorder(BorderFactory.createMatteBorder(0, 0, 10, 5, Color.DARK_GRAY));
-		generalInfo.setLayout(null);
-		add(generalInfo);
-		/////// FILLERS ////////
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(0, 170, 45, 10);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		generalInfo.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(45, 170, 5, 8);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		generalInfo.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(50, 170, 5, 5);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		generalInfo.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(55, 170, 5, 3);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		generalInfo.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(60, 170, 5, 0);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		generalInfo.add(fillLabel);
-		fillLabel = new JLabel(" ");
-		fillLabel.setBounds(65, 170, 160, 5);
-		fillLabel.setOpaque(true);
-		fillLabel.setBorder(BorderFactory.createEmptyBorder());
-		fillLabel.setBackground(Color.white);
-		generalInfo.add(fillLabel);
-		/////// TYPE1 ////////
-		type = new JTextField("TYPE1/");
-		type.setBounds(5, 5, 150, 20);
-		type.setBorder(BorderFactory.createEmptyBorder());
-		type.setEditable(false);
-		type.setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		type.setFont(inGameFont.getFont());
-		type.setHighlighter(null);
-		generalInfo.add(type);
-		/////// TYPE1 ////////
-		type = new JTextField(m1.getType());
-		type.setBounds(27, 25, 150, 20);
-		type.setBorder(BorderFactory.createEmptyBorder());
-		type.setEditable(false);
-		type.setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		type.setFont(inGameFont.getFont());
-		type.setHighlighter(null);
-		generalInfo.add(type);
-		if (m1.getTypeTwo() != null) {
-			/////// TYPE2 ////////
-			type = new JTextField("TYPE2/");
-			type.setBounds(5, 45, 150, 20);
-			type.setBorder(BorderFactory.createEmptyBorder());
-			type.setEditable(false);
-			type.setBackground(Color.white);
-			inGameFont = new InGameFont(gameFont, 5);
-			type.setFont(inGameFont.getFont());
-			type.setHighlighter(null);
-			generalInfo.add(type);
-			/////// TYPE2 ////////
-			type = new JTextField(m1.getTypeTwo());
-			type.setBounds(27, 65, 150, 20);
-			type.setBorder(BorderFactory.createEmptyBorder());
-			type.setEditable(false);
-			type.setBackground(Color.white);
-			inGameFont = new InGameFont(gameFont, 5);
-			type.setFont(inGameFont.getFont());
-			type.setHighlighter(null);
-			generalInfo.add(type);
-		}
-		/////// ID ////////
-		idNo = new JTextField("IDNo/");
-		idNo.setBounds(5, 85, 150, 20);
-		idNo.setBorder(BorderFactory.createEmptyBorder());
-		idNo.setEditable(false);
-		idNo.setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		idNo.setFont(inGameFont.getFont());
-		idNo.setHighlighter(null);
-		generalInfo.add(idNo);
-		/////// ID ////////
-		idNo = new JTextField(m1.getRandomIDNo());
-		idNo.setBounds(35, 105, 150, 20);
-		idNo.setBorder(BorderFactory.createEmptyBorder());
-		idNo.setEditable(false);
-		idNo.setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		idNo.setFont(inGameFont.getFont());
-		idNo.setHighlighter(null);
-		generalInfo.add(idNo);
-		/////// OTNAME ////////
-		idNo = new JTextField("OT/");
-		idNo.setBounds(5, 125, 150, 20);
-		idNo.setBorder(BorderFactory.createEmptyBorder());
-		idNo.setEditable(false);
-		idNo.setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		idNo.setFont(inGameFont.getFont());
-		idNo.setHighlighter(null);
-		generalInfo.add(idNo);
-		/////// OTNAME ////////
-		idNo = new JTextField("RED");
-		idNo.setBounds(35, 145, 150, 20);
-		idNo.setBorder(BorderFactory.createEmptyBorder());
-		idNo.setEditable(false);
-		idNo.setBackground(Color.white);
-		inGameFont = new InGameFont(gameFont, 5);
-		idNo.setFont(inGameFont.getFont());
-		idNo.setHighlighter(null);
-		generalInfo.add(idNo);
-	}
-
-	private ImageIcon loadFrontSprite(Monsters m1) {
-		String userDirectory = System.getProperty("user.home") + File.separator + "Documents" + File.separator + "Version 1.0 Folder" + File.separator + "Game assets" + File.separator + "Sprites" + File.separator + "gray";
-		File custom = new File(userDirectory);
-		String absoluteP = custom.getAbsolutePath();
-		String imgFile = absoluteP +  File.separator + m1.getID();
-		ImageIcon icon = new ImageIcon(imgFile);
-		Image image = icon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(140, 140,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
-		icon = new ImageIcon(newimg);
-		
-        return icon;
-	}
-	public void setInGameListener(InGameListener listener) {
-		this.inGameListener = listener;
-	}
-}
 class CombatVsWild {
 	private ActionListener listener;
 	private Timer delaytimer;
@@ -2412,6 +1207,9 @@ class CombatVsWild {
 	}
 	public boolean isBattleOver() {
 		return this.battleOver;
+	}
+	public void setBattleOver(boolean battleOver) {
+		this.battleOver = battleOver;
 	}
 	public boolean isTurnOver() {
 		return this.turnOver;

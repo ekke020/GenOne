@@ -13,6 +13,7 @@ import javax.swing.Timer;
 import inGameInterface.BattleElements;
 import inGamePlayer.Player;
 import pokemon.Monsters;
+import tools.RotateLabel;
 
 public class Moves implements java.io.Serializable{
 
@@ -130,30 +131,7 @@ public class Moves implements java.io.Serializable{
         return icon;
 	}
 }
-class RotateLabel extends JLabel {
 
-	private int degree;
-	private ImageIcon rIcon;
-	public RotateLabel(ImageIcon icon, int degree) {
 
-		super(icon);
-		this.degree = degree;
-		rIcon = icon;
-	}
-
-	
-	public ImageIcon getRIcon() {
-		return this.rIcon;
-	}
-	@Override
-	public void paintComponent(Graphics g) {
-
-		Graphics2D gx = (Graphics2D) g;
-		gx.rotate(Math.toRadians(this.degree),rIcon.getIconWidth()/2,rIcon.getIconHeight()/2);
-		super.paintComponent(g);
-		
-	}
-
-}
 
 

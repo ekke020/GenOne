@@ -10,6 +10,7 @@ import javax.swing.Timer;
 import inGameInterface.BattleElements;
 import inGamePlayer.Player;
 import pokemon.Monsters;
+import tools.RotateLabel;
 
 public class Bubble extends Moves {
 
