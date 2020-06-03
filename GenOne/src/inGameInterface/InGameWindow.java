@@ -2,13 +2,10 @@ package inGameInterface;
 
 
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Line2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -19,8 +16,13 @@ import javax.swing.JLayeredPane;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 
+import controls.GameControls;
+import controls.KeyboardClicks;
+import controls.KeyboardListener;
 import inGamePlayer.Player;
 import music.Sound;
+import overWorld.PlayerCharacter;
+import overWorld.TestWorld;
 import pokemon.Bulbasaur;
 import pokemon.Charmander;
 import pokemon.Monsters;
@@ -30,6 +32,9 @@ import pokemon.Squirtle;
 
 public class InGameWindow extends JFrame {
 
+	private final GameControls gameControls = new GameControls();
+	private TestWorld testWorld;
+	
 	private BattleElements battlePanel;
 	private JLayeredPane lpane;
 	private JLayeredPane lpaneTwo;
@@ -77,14 +82,50 @@ public class InGameWindow extends JFrame {
 		for (int i = 0; i < 6; i ++)
 			p1.addTeam(generateAndAddTest());
 		
-		addBottomLayer();
-		addBattlePanel();
-		addLayerdPane();
-		
+		//addBottomLayer();
+		//addBattlePanel();
+		//addLayerdPane(); 
+		addGameControls();
+		addOverWorld();
 		//sound = new Sound(filepath);
 		//sound.play();
 	}
 
+	private void addGameControls() {
+		addKeyListener(gameControls);
+		gameControls.setKeyboardListener(new KeyboardListener() {
+			
+			@Override
+			public void formEventOccurred(KeyboardClicks k) {
+				//c = 0; //testWorld.getP1().getCounter();
+									
+				if (k.getKeyCode() == 37) {
+
+					//testWorld.getP1().setDir("Player_Sprite_03_West.png");
+			
+				} // Left
+				/*else if (k.getKeyCode() == 38) {
+					testWorld.getP1().setDir("Player_Sprite_03_North.png");
+				} // up
+				else if (k.getKeyCode() == 39) {
+					testWorld.getP1().setDir("Player_Sprite_03_East.png");
+				} // right
+				else if (k.getKeyCode() == 40) {
+					testWorld.getP1().setDir("Player_Sprite_03_South.png");
+				} // down
+				*/
+				
+			}  
+				
+		});
+	}
+	private void addOverWorld() {
+		testWorld = new TestWorld();
+		testWorld.setBounds(0, 0, 500, 500);
+		testWorld.setBackground(Color.black);
+		testWorld.setOpaque(true);
+		add(testWorld);
+	}
 	private void addBottomLayer() {
 		bottomLayer = new JLayeredPane();
 		bottomLayer.setBounds(0, 0, 500, 500); 
